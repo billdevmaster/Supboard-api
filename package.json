@@ -7,9 +7,10 @@
     },
     "main": "app.js",
     "scripts": {
-        "start": "nodemon -e js --exec \"node app.js\"",
+        "start": "node app.js",
         "client": "cd client && npm start",
-        "server": "nodemon app.js"
+        "server": "nodemon app.js",
+        "dev": "nodemon -e js --exec \"node app.js\""
     },
     "author": "Hemakshi Sachdev",
     "license": "ISC",
