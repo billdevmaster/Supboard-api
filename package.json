@@ -3,7 +3,7 @@
     "version": "1.0.0",
     "description": "A Basic MERN Stack App just for practice",
     "engines": {
-        "node": "8.12.0"
+        "node": "14.17.5"
     },
     "main": "app.js",
     "scripts": {
