@@ -3,6 +3,7 @@ const session = require('express-session');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const bodyParser = require('body-parser');
+const multer = require('multer');
 
 const path = require('path');
 require('dotenv').config();
@@ -27,7 +28,6 @@ mongoose.connection.on('error', (error) => {
 });
 
 let app = express();
-
 // Body Parser Middleware
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
@@ -43,7 +43,14 @@ app.use(session({
     saveUninitialized: false
 }));
 
-app.use(express.static(path.join(__dirname, 'client/build')));
+// app.use(express.static(path.join(__dirname, 'client/build')));
+app.use('/uploads', express.static('uploads', {
+    setHeaders: (res, path, stat) => {
+        if (!path.includes('.')) {
+          res.set('Content-Type', 'image/png');
+        }
+      }
+}));
 
 global.appRoot = path.resolve(__dirname);
 
