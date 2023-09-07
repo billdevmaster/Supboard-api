@@ -14,9 +14,11 @@ const edit = async (req, res) => {
       let location = {};
       if (id == 0) {
         location = new LocationModel();
+        location.createdBy = res.user.id;
       } else {
         location = await LocationModel.findById(id);
       }
+      location.status = fields['status'][0];
       location.name = fields['name'][0];
       location.address = fields['address'][0];
       location.email = fields['email'][0];
@@ -27,7 +29,7 @@ const edit = async (req, res) => {
       location.description = fields['description'][0];
       location.stationType = fields['stationType'][0];
       location.operationalMonths = fields['operationalMonths'][0].split(",");
-      location.images = fields['oldImages'][0].split(",");
+      location.images = fields['oldImages'][0] != "" ? fields['oldImages'][0].split(",") : [];
       if(files.files) {
         for (let i = 0; i < files.files.length; i++) {
           const time = new Date().getTime();
@@ -82,12 +84,22 @@ const getList = async (req, res) => {
     ];
     query.push({ $count: 'totalCount' });
     const totalCnt = await LocationModel.aggregate(query);
-    console.log(totalCnt)
     query.splice(query.length - 1, 1);
     query.push({ "$skip": currentPage * length });
     query.push({ "$limit": length });
     const data = await LocationModel.aggregate(query);
     return res.status("200").json({ data, totalPage: (Math.floor((totalCnt.length > 0 ? totalCnt[0].totalCount : 0) / length) + 1) });
+
+  } catch (e) {
+    console.log(e)
+    return res.status(503).json({ msg: "Server Error" });
+  }
+}
+
+const getListByUser = async (req, res) => {
+  try {
+    const data = await LocationModel.find({ createdBy: res.user.id, isDelete: {$ne: true}, status: "Active" });
+    return res.status("200").json({ data });
 
   } catch (e) {
     console.log(e)
@@ -136,6 +148,7 @@ const getItem = async (req, res) => {
 module.exports = {
   edit,
   getList,
+  getListByUser,
   deleteItem,
   getItem
 }

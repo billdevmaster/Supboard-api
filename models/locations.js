@@ -36,6 +36,8 @@ const LocationSchema = mongoose.Schema({
   stationType: String,
   operationalMonths: [String],
   images: [String],
+  createdBy: ObjectId,
+  status: String,
   isDelete: {
     type: Boolean,
     default: false
